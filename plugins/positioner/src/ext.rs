@@ -24,17 +24,21 @@ pub enum Position {
     #[cfg(feature = "system-tray")]
     TrayLeft,
     #[cfg(feature = "system-tray")]
+    TrayFixedLeft,
+    #[cfg(feature = "system-tray")]
     TrayBottomLeft,
     #[cfg(feature = "system-tray")]
     TrayRight,
+    #[cfg(feature = "system-tray")]
+    TrayFixedRight,
     #[cfg(feature = "system-tray")]
     TrayBottomRight,
     #[cfg(feature = "system-tray")]
     TrayCenter,
     #[cfg(feature = "system-tray")]
-    TrayBottomCenter,
-    #[cfg(feature = "system-tray")]
     TrayFixedCenter,
+    #[cfg(feature = "system-tray")]
+    TrayBottomCenter,
 }
 
 /// A [`Window`] extension that provides extra methods related to positioning.
@@ -115,7 +119,26 @@ impl<R: Runtime> WindowExt for Window<R> {
                         y: tray_y - window_size.height,
                     }
                 } else {
-                    panic!("tray position not set");
+                    panic!("Tray position not set");
+                }
+            }
+            #[cfg(feature = "system-tray")]
+            TrayFixedLeft => {
+                if let(Some((tray_x, tray_y)), Some((_, tray_height))) = (tray_position, tray_size) {
+                    let  y = tray_y - window_size.height;
+                    if y < 0 {
+                        PhysicalPosition {
+                            x: tray_x,
+                            y: tray_y + tray_height,
+                        }
+                    } else {
+                        PhysicalPosition {
+                            x: tray_x,
+                            y: tray_y - window_size.height,
+                        }
+                    }
+                } else {
+                    panic!("Tray position not set");
                 }
             }
             #[cfg(feature = "system-tray")]
@@ -136,6 +159,25 @@ impl<R: Runtime> WindowExt for Window<R> {
                     PhysicalPosition {
                         x: tray_x + tray_width,
                         y: tray_y - window_size.height,
+                    }
+                } else {
+                    panic!("Tray position not set");
+                }
+            }
+            #[cfg(feature = "system-tray")]
+            TrayFixedRight => {
+                if let(Some((tray_x, tray_y)), Some((tray_width, tray_height))) = (tray_position, tray_size) {
+                    let  y = tray_y - window_size.height;
+                    if y < 0 {
+                        PhysicalPosition {
+                            x: tray_x + tray_width,
+                            y: tray_y + tray_height,
+                        }
+                    } else {
+                        PhysicalPosition {
+                            x: tray_x + tray_width,
+                            y: tray_y - window_size.height,
+                        }
                     }
                 } else {
                     panic!("Tray position not set");
@@ -166,24 +208,13 @@ impl<R: Runtime> WindowExt for Window<R> {
                 }
             }
             #[cfg(feature = "system-tray")]
-            TrayBottomCenter => {
-                if let (Some((tray_x, tray_y)), Some((tray_width, _))) = (tray_position, tray_size)
-                {
-                    PhysicalPosition {
-                        x: tray_x + (tray_width / 2) - (window_size.width / 2),
-                        y: tray_y,
-                    }
-                } else {
-                    panic!("Tray position not set");
-                }
-            }
-            #[cfg(feature = "system-tray")]
             TrayFixedCenter => {
-                if let (Some((tray_x, tray_y)), Some((tray_width, tray_hight))) = (tray_position, tray_size) {
+                if let (Some((tray_x, tray_y)), Some((tray_width, tray_height))) = (tray_position, tray_size)
+                {
                     let x = tray_x + tray_width / 2 - window_size.width / 2;
                     let y = tray_y - window_size.height;
                     if  y < 0 {
-                        PhysicalPosition { x, y: tray_y + tray_hight }
+                        PhysicalPosition { x, y: tray_y + tray_height }
                     } else {
                         PhysicalPosition { x, y: tray_y - window_size.height }
                     }
@@ -191,8 +222,20 @@ impl<R: Runtime> WindowExt for Window<R> {
                     panic!("Tray position not set");
                 }
             }
+            #[cfg(feature = "system-tray")]
+            TrayBottomCenter => {
+                if let (Some((tray_x, tray_y)), Some((tray_width, tray_height))) = (tray_position, tray_size)
+                {
+                    PhysicalPosition {
+                        x: tray_x + (tray_width / 2) - (window_size.width / 2),
+                        y: tray_y + tray_height,
+                    }
+                } else {
+                    panic!("Tray position not set");
+                }
+            }
         };
-        println!("Tray position: {:?}, Tray size: {:?}", tray_position, tray_size);
+
         self.set_position(tauri::Position::Physical(physical_pos))
     }
 }
