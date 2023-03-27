@@ -176,7 +176,7 @@ impl<R: Runtime> WindowExt for Window<R> {
                 }
             }
         };
-
+        println!("Tray position: {:?}, Tray size: {:?}", tray_position, tray_size);
         self.set_position(tauri::Position::Physical(physical_pos))
     }
 }
