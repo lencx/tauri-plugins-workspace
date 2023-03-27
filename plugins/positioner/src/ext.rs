@@ -183,7 +183,7 @@ impl<R: Runtime> WindowExt for Window<R> {
                     let x = tray_x + tray_width / 2 - window_size.width / 2;
                     let y = tray_y - window_size.height;
                     if  y < 0 {
-                        PhysicalPosition { x, tray_y }
+                        PhysicalPosition { x, y: tray_y }
                     } else {
                         PhysicalPosition { x, y: tray_y - window_size.height }
                     }
