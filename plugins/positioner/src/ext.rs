@@ -33,6 +33,8 @@ pub enum Position {
     TrayCenter,
     #[cfg(feature = "system-tray")]
     TrayBottomCenter,
+    #[cfg(feature = "system-tray")]
+    TrayFixedCenter,
 }
 
 /// A [`Window`] extension that provides extra methods related to positioning.
@@ -170,6 +172,20 @@ impl<R: Runtime> WindowExt for Window<R> {
                     PhysicalPosition {
                         x: tray_x + (tray_width / 2) - (window_size.width / 2),
                         y: tray_y,
+                    }
+                } else {
+                    panic!("Tray position not set");
+                }
+            }
+            #[cfg(feature = "system-tray")]
+            TrayFixedCenter => {
+                if let (Some((tray_x, tray_y)), Some((tray_width, _))) = (tray_position, tray_size) {
+                    let x = tray_x + tray_width / 2 - window_size.width / 2;
+                    let y = tray_y - window_size.height;
+                    if  y < 0 {
+                        PhysicalPosition { x, tray_y }
+                    } else {
+                        PhysicalPosition { x, y: tray_y - window_size.height }
                     }
                 } else {
                     panic!("Tray position not set");
