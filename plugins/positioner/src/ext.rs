@@ -179,11 +179,11 @@ impl<R: Runtime> WindowExt for Window<R> {
             }
             #[cfg(feature = "system-tray")]
             TrayFixedCenter => {
-                if let (Some((tray_x, tray_y)), Some((tray_width, _))) = (tray_position, tray_size) {
+                if let (Some((tray_x, tray_y)), Some((tray_width, tray_hight))) = (tray_position, tray_size) {
                     let x = tray_x + tray_width / 2 - window_size.width / 2;
                     let y = tray_y - window_size.height;
                     if  y < 0 {
-                        PhysicalPosition { x, y: tray_y }
+                        PhysicalPosition { x, y: tray_y + tray_hight }
                     } else {
                         PhysicalPosition { x, y: tray_y - window_size.height }
                     }
