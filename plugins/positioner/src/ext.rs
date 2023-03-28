@@ -133,7 +133,7 @@ impl<R: Runtime> WindowExt for Window<R> {
                     #[cfg(target_os = "macos")]
                     let y = if y < 0 { tray_y } else { y };
 
-                    PhysicalPosition { tray_x, y }
+                    PhysicalPosition { x: tray_x, y }
                 } else {
                     panic!("Tray position not set");
                 }
@@ -172,7 +172,7 @@ impl<R: Runtime> WindowExt for Window<R> {
                     #[cfg(target_os = "macos")]
                     let y = if y < 0 { tray_y } else { y };
 
-                    PhysicalPosition { tray_x + tray_width, y }
+                    PhysicalPosition { x: tray_x + tray_width, y }
                 } else {
                     panic!("Tray position not set");
                 }
